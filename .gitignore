@@ -1,0 +1,18 @@
+# build
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# ambiente
+.env
+.env.production
+
+# sistema
+.DS_Store
+
+# planejamento / bastidor (ficam só local, fora do repositório)
+ROTEIRO.md
+ROTEIRO_SERIE_HERMES.md
+CLAUDE.md

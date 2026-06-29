@@ -4,7 +4,6 @@ description: "Instalei o WordPress pra começar o blog e fui escolher um tema. F
 date: 2026-06-27
 category: "Programação"
 tags: ["meta", "ferramentas"]
-draft: true
 ---
 
 Instalei o WordPress num sábado à tarde. Baixei, criei o banco, configurei o `wp-config.php`, criei o usuário admin. Quinze minutos e estava no ar. Aí fui pra parte que eu achava que ia ser divertida: escolher um tema.

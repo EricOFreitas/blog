@@ -4,6 +4,7 @@ description: "A jornada real de instalar o Hermes Agent, criar 4 perfis, conecta
 date: 2026-05-27
 category: "Programação"
 tags: ["ia", "agentes"]
+draft: true
 ---
 
 Eram 2 da manhã de uma terça-feira. Eu estava com o terminal aberto, um copo de café do lado, finalizando a configuração do quarto bot do Telegram. Quando mandei "oi" e ele respondeu, eu ri sozinho.

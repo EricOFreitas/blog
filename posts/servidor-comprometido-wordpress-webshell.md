@@ -1,10 +1,9 @@
 ---
 title: "Meu Servidor Foi Comprometido: Como Descobri, Limpei e o Que Aprendi"
 description: "Um email da Hetzner às 2 da manhã, 57 web shells na pasta de uploads e um backdoor escondido dentro de um .png. O passo a passo real de como achei e limpei um WordPress invadido."
-date: 2026-05-09
+date: 2026-06-28
 category: "Infra"
 tags: ["infra", "segurança"]
-draft: true
 ---
 
 Era quase meia-noite quando o email chegou. Remetente: `abuse@hetzner.com`. Assunto: relatório de abuso sobre meu IP.

@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PostCard from './PostCard.astro';
+import { groupByMonth } from '../lib/posts';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+}
+
+const { posts } = Astro.props;
+const grupos = groupByMonth(posts);
+---
+
+<div class="post-groups">
+  {
+    grupos.map((grupo) => (
+      <section class="month-group">
+        <h2 class="month-label">{grupo.label}</h2>
+        <ul class="post-list">
+          {grupo.posts.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>

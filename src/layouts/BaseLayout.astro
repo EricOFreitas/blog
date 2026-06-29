@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import { getVisiblePosts } from '../lib/posts';
+import { CATEGORY_NAMES, CATEGORY_SLUGS } from '../categories';
 
 interface Props {
   title: string;
@@ -8,8 +10,13 @@ interface Props {
 
 const {
   title,
-  description = 'Aventuras reais em programação e infra — por Eric de Oliveira Freitas.',
+  description = 'Aventuras reais em programação, infra, investimentos e educação — por Eric de Oliveira Freitas.',
 } = Astro.props;
+
+// No menu, mostra só as categorias que já têm post visível (sem link morto).
+const posts = await getVisiblePosts();
+const usadas = new Set(posts.map((p) => p.data.category));
+const navCats = CATEGORY_NAMES.filter((c) => usadas.has(c));
 ---
 
 <!doctype html>
@@ -18,8 +25,7 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Define o tema ANTES da página pintar, pra não dar flash branco no escuro.
-         is:inline = roda imediato, não é adiado nem empacotado pelo Astro. -->
+    <!-- Define o tema ANTES da página pintar, pra não dar flash branco no escuro. -->
     <script is:inline>
       (function () {
         const saved = localStorage.getItem('theme');
@@ -29,17 +35,21 @@ const {
     </script>
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Eric de Oliveira Freitas — blog"
+      href="/rss.xml"
+    />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- open graph básico -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
 
     <title>{title}</title>
 
-    <!-- Inter via Google Fonts (troque por self-host depois se quiser) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -51,20 +61,29 @@ const {
   <body>
     <header class="site-header">
       <div class="wrap">
-        <a class="brand" href="/">
-          <span class="prompt">eric</span> ~ blog
-        </a>
+        <div class="nav-left">
+          <a class="brand" href="/">
+            <span class="prompt">eric</span> ~ blog
+          </a>
+          {
+            navCats.length > 0 && (
+              <nav class="site-nav">
+                {navCats.map((c) => (
+                  <a href={`/categoria/${CATEGORY_SLUGS[c]}/`}>{c}</a>
+                ))}
+              </nav>
+            )
+          }
+        </div>
         <button
           id="theme-toggle"
           class="theme-toggle"
           type="button"
           aria-label="Alternar entre tema claro e escuro"
         >
-          <!-- mostrado no escuro -->
           <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
-          <!-- mostrado no claro -->
           <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="4"></circle>
             <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
@@ -81,8 +100,10 @@ const {
 
     <footer class="site-footer">
       <div class="wrap">
-        Eric de Oliveira Freitas · aventuras reais em programação e infra<br />
-        feito com <a href="https://astro.build">Astro</a> · sem WordPress, de propósito
+        Eric de Oliveira Freitas · aventuras reais em programação, infra, investimentos e
+        educação<br />
+        <a href="/rss.xml">RSS</a> · feito com <a href="https://astro.build">Astro</a> ·
+        sem WordPress, de propósito
       </div>
     </footer>
 

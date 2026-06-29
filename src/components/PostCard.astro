@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { CATEGORY_SLUGS } from '../categories';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const url = `/posts/${post.id}/`;
+// A data não entra aqui: o cabeçalho do mês (PostList) já dá esse contexto.
+---
+
+<li class="post-card">
+  <a class="card-title" href={url}>
+    <h3>{post.data.title}</h3>
+  </a>
+  <p class="meta">
+    <a class="cat-link" href={`/categoria/${CATEGORY_SLUGS[post.data.category]}/`}>
+      {post.data.category}
+    </a>
+    {post.data.tags.length > 0 && <span> · {post.data.tags.join(' · ')}</span>}
+    {post.data.draft && <span class="draft-flag"> · rascunho</span>}
+  </p>
+  <a class="card-excerpt" href={url}>{post.data.description}</a>
+</li>

@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { getVisiblePosts } from '../../lib/posts';
+import { CATEGORY_SLUGS, CATEGORY_TAGLINES } from '../../categories';
+
+// Gera uma página só pras categorias que têm pelo menos um post visível.
+export async function getStaticPaths() {
+  const posts = await getVisiblePosts();
+  const usadas = [...new Set(posts.map((p) => p.data.category))];
+
+  return usadas.map((categoria) => ({
+    params: { categoria: CATEGORY_SLUGS[categoria] },
+    props: {
+      categoria,
+      posts: posts.filter((p) => p.data.category === categoria),
+    },
+  }));
+}
+
+const { categoria, posts } = Astro.props;
+---
+
+<BaseLayout
+  title={`${categoria} — Eric de Oliveira Freitas`}
+  description={CATEGORY_TAGLINES[categoria]}
+>
+  <section class="intro">
+    <h1>{categoria}</h1>
+    <p>{CATEGORY_TAGLINES[categoria]}</p>
+  </section>
+
+  <PostList posts={posts} />
+</BaseLayout>

@@ -2,6 +2,7 @@
 title: "Meu Primeiro Post Foi Sobre um WordPress Invadido. O Blog Não Vai Ser Um."
 description: "Instalei o WordPress pra começar o blog e fui escolher um tema. Foi quando me toquei da ironia — e por que site estático fazia muito mais sentido pro meu caso do que eu tinha parado pra pensar."
 date: 2026-06-27
+category: "Programação"
 tags: ["meta", "ferramentas"]
 draft: true
 ---

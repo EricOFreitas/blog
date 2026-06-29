@@ -1,22 +1,23 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import Comments from '../components/Comments.astro';
+import { CATEGORY_SLUGS, type CategoryName } from '../categories';
 
 interface Props {
   title: string;
   description: string;
   date: Date;
+  category: CategoryName;
   tags?: string[];
 }
 
-const { title, description, date, tags = [] } = Astro.props;
+const { title, description, date, category, tags = [] } = Astro.props;
 
 const dataFmt = date.toLocaleDateString('pt-BR', {
   day: '2-digit',
   month: 'long',
   year: 'numeric',
 });
-
-const metaLine = [dataFmt, ...tags].join(' · ');
 ---
 
 <BaseLayout title={title} description={description}>
@@ -24,12 +25,18 @@ const metaLine = [dataFmt, ...tags].join(' · ');
     <header class="post-header">
       <h1>{title}</h1>
       <div class="accent-line"></div>
-      <p class="meta">{metaLine}</p>
+      <p class="meta">
+        <a class="cat-link" href={`/categoria/${CATEGORY_SLUGS[category]}/`}>{category}</a>
+        <span> · {dataFmt}</span>
+        {tags.length > 0 && <span> · {tags.join(' · ')}</span>}
+      </p>
     </header>
 
     <div class="prose">
       <slot />
     </div>
+
+    <Comments />
 
     <a class="back-link" href="/">cd ..</a>
   </article>

@@ -2,6 +2,7 @@
 title: "A Telinha do Meu Teclado Novo Era Inútil no Linux. Até Eu Decifrar o Protocolo Dela"
 description: "O Attack Shark X85 Pro tem uma telinha que só funciona com o software de Windows. Capturei o tráfego USB, decifrei o protocolo e fiz ela funcionar no Linux."
 date: 2026-06-26
+category: "Programação"
 tags: ["linux", "engenharia reversa"]
 ---
 

@@ -1,10 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // Troque pelo domínio final quando publicar (usado em RSS, sitemap, og:url).
-  site: 'https://blog.eric.dev',
+  // Domínio final (usado em RSS, sitemap, og:url).
+  site: 'https://ericofreitas.eng.br',
+
+  integrations: [sitemap()],
 
   markdown: {
     // Shiki já vem embutido no Astro — é o mesmo highlighter do VS Code.

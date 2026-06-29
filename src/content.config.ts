@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { CATEGORY_NAMES } from './categories';
 
 // Aponta a coleção pra sua pasta `posts/` que já existe na raiz —
 // os .md continuam onde estão, o Astro só lê de lá.
@@ -11,6 +12,7 @@ const posts = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
+    category: z.enum(CATEGORY_NAMES),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
   }),

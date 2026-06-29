@@ -1,36 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PostList from '../components/PostList.astro';
+import { getVisiblePosts } from '../lib/posts';
 
-// Rascunhos (draft: true) aparecem no localhost pra você revisar,
-// mas somem do site publicado. Ordena do mais novo pro mais velho.
-const posts = (await getCollection('posts'))
-  .filter((post) => import.meta.env.DEV || !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-const fmtMes = (d: Date) =>
-  d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+const posts = await getVisiblePosts();
 ---
 
 <BaseLayout title="Eric de Oliveira Freitas — blog">
   <section class="intro">
-    <h1>Aventuras reais em programação e infra</h1>
+    <h1>Aventuras reais em programação, infra e além</h1>
     <p>Incidentes, decisões e projetos que realmente aconteceram. Sem tutorial de CRUD.</p>
   </section>
 
-  <ul class="post-list">
-    {
-      posts.map((post) => (
-        <li>
-          <a href={`/posts/${post.id}/`}>
-            <h2>{post.data.title}</h2>
-            <p class="meta">
-              {[fmtMes(post.data.date), ...post.data.tags].join(' · ')}
-            </p>
-            <p class="excerpt">{post.data.description}</p>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  <PostList posts={posts} />
 </BaseLayout>

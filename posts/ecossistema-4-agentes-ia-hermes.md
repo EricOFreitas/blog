@@ -2,6 +2,7 @@
 title: "Eu Construí 4 Agentes de IA Que Cuidam da Minha Vida Financeira, Acadêmica e Código — Com Uma VPS de 9 Dólares"
 description: "A jornada real de instalar o Hermes Agent, criar 4 perfis, conectar bots no Telegram e orquestrar a comunicação entre eles via Kanban. Não é tutorial — é o raciocínio e o que aprendi."
 date: 2026-05-27
+category: "Programação"
 tags: ["ia", "agentes"]
 ---
 

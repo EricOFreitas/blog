@@ -1,5 +1,5 @@
 ---
-title: "Meu Primeiro Post Foi Sobre um WordPress Invadido. O Blog Não Vai Ser Um."
+title: "Meu Blog Nasceu de um WordPress Invadido. E Não Vai Ser Um."
 description: "Instalei o WordPress pra começar o blog e fui escolher um tema. Foi quando me toquei da ironia — e por que site estático fazia muito mais sentido pro meu caso do que eu tinha parado pra pensar."
 date: 2026-06-27
 category: "Programação"
@@ -10,7 +10,7 @@ Instalei o WordPress num sábado à tarde. Baixei, criei o banco, configurei o `
 
 Passei um tempo bom olhando tema. Queria algo direto, denso, focado em texto — o estilo do Akita on Rails, que eu curto, sem virar uma cópia escancarada. E enquanto eu comparava um tema com outro, me toquei do óbvio.
 
-O primeiro post que eu ia publicar nesse blog é sobre um **WordPress invadido**. Uma VPS minha que virou parte de uma botnet porque um plugin desatualizado — o WP File Manager — deixou um atacante subir 57 web shells na pasta de uploads e instalar um backdoor escondido dentro de um arquivo `.png`.
+A história que eu mais queria contar nesse blog é a de um **WordPress invadido**. Uma VPS minha que virou parte de uma botnet porque um plugin desatualizado — o WP File Manager — deixou um atacante subir 57 web shells na pasta de uploads e instalar um backdoor escondido dentro de um arquivo `.png`.
 
 E eu ia publicar essa história… rodando num WordPress.
 
@@ -33,7 +33,7 @@ Ou seja: eu ia adicionar uma camada de trabalho pra *converter* o que eu já ten
 
 ## O elefante: superfície de ataque
 
-Aí tem o assunto do meu próprio primeiro post.
+Aí tem o assunto que eu vivi na pele.
 
 WordPress é PHP + MySQL + um ecossistema de plugins de qualidade variável. É a plataforma mais atacada da web justamente porque é a mais usada — tem bot varrendo a internet inteira atrás de `/wp-login.php` e de plugins com CVE conhecido. Eu sei disso não da teoria: eu limpei web shell na unha às duas da manhã.
 
@@ -74,7 +74,7 @@ Nesse blog ele não retorna nada. Não porque eu limpei — porque não existe `
 
 Nenhuma ferramenta é melhor que a outra no vácuo. WordPress move uma fatia gigante da web e faz isso bem pra quem precisa do que ele oferece. O erro não é escolher WordPress — o erro é escolher qualquer coisa no automático, porque "é assim que se faz", sem checar se bate com como você realmente trabalha e com o que você realmente precisa defender.
 
-Eu quase fiz isso. Me salvou ter um primeiro post que era, literalmente, sobre o custo de rodar um WordPress que você não consegue manter.
+Eu quase fiz isso. Me salvou ter vivido, na pele, o custo de rodar um WordPress que você não consegue manter.
 
 Dois princípios que levo daqui:
 

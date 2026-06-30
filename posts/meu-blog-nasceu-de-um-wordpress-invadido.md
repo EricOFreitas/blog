@@ -1,7 +1,7 @@
 ---
-title: "Meu Blog Nasceu de um WordPress Invadido. E Não Vai Ser Um."
+title: "Meu blog nasceu de um WordPress invadido"
 description: "Instalei o WordPress pra começar o blog e fui escolher um tema. Foi quando me toquei da ironia — e por que site estático fazia muito mais sentido pro meu caso do que eu tinha parado pra pensar."
-date: 2026-06-27
+date: 2026-06-19
 category: "Programação"
 tags: ["meta", "ferramentas"]
 ---
@@ -10,7 +10,7 @@ Instalei o WordPress num sábado à tarde. Baixei, criei o banco, configurei o `
 
 Passei um tempo bom olhando tema. Queria algo direto, denso, focado em texto — o estilo do Akita on Rails, que eu curto, sem virar uma cópia escancarada. E enquanto eu comparava um tema com outro, me toquei do óbvio.
 
-A história que eu mais queria contar nesse blog é a de um **WordPress invadido**. Uma VPS minha que virou parte de uma botnet porque um plugin desatualizado — o WP File Manager — deixou um atacante subir 57 web shells na pasta de uploads e instalar um backdoor escondido dentro de um arquivo `.png`.
+A primeira história que eu queria contar nesse blog é a de um **WordPress invadido**. Uma VPS minha que virou parte de uma botnet porque um plugin desatualizado — o WP File Manager — deixou um atacante subir 57 web shells na pasta de uploads e instalar um backdoor escondido dentro de um arquivo `.png`.
 
 E eu ia publicar essa história… rodando num WordPress.
 
@@ -27,7 +27,7 @@ Quando paro pra listar, é pouca coisa:
 
 Repara que "painel de administração", "banco de dados" e "sistema de plugins" não estão nessa lista. Eles são meio que o pacote do WordPress, não algo que eu pedi.
 
-E tem um detalhe do meu fluxo que muda tudo: **meus posts já são arquivos Markdown.** Eu escrevo no editor, no terminal, versionado. O post do servidor comprometido nasceu como `servidor-comprometido-wordpress-webshell.md`. Pra publicar no WordPress, eu teria que colar isso no editor de blocos, ou instalar um plugin de Markdown, e rezar pra formatação do bloco de código não quebrar.
+E tem um detalhe do meu fluxo que muda tudo: **meus posts já são arquivos Markdown.** Eu escrevo no editor visual simples, ou no terminal, versionado. O post do servidor comprometido nasceu como `servidor-comprometido-wordpress-webshell.md`. Pra publicar no WordPress, eu teria que colar isso no editor de blocos, ou instalar um plugin de Markdown, e rezar pra formatação do bloco de código não quebrar.
 
 Ou seja: eu ia adicionar uma camada de trabalho pra *converter* o que eu já tenho pronto num formato que o WordPress entende. Isso é o contrário de tirar atrito.
 

@@ -1,12 +1,12 @@
 ---
 title: "Meu Servidor Foi Comprometido: Como Descobri, Limpei e o Que Aprendi"
 description: "Um email da Hetzner às 2 da manhã, 57 web shells na pasta de uploads e um backdoor escondido dentro de um .png. O passo a passo real de como achei e limpei um WordPress invadido."
-date: 2026-06-28
+date: 2026-06-26
 category: "Infra"
 tags: ["infra", "segurança"]
 ---
 
-Era quase meia-noite quando o email chegou. Remetente: `abuse@hetzner.com`. Assunto: relatório de abuso sobre meu IP.
+O email chegou quase 2 da manhã — mas eu só fui ver quando acordei. Remetente: `abuse@hetzner.com`. Assunto: relatório de abuso sobre meu IP.
 
 Primeira reação? Aquela sensação no estômago de quem sabe que alguma coisa está muito errada.
 
@@ -42,6 +42,8 @@ Doze instalações de WordPress ativas. Variando de sites bem mantidos a outros 
 Antes de investigar qualquer coisa, a prioridade é parar o dano. Enquanto meu servidor continua atacando outros, a situação só piora.
 
 ```bash
+# Derruba toda conexão de saída em HTTP (80) e HTTPS (443) — corta o ataque na
+# hora sem desligar a máquina; serviços internos continuam de pé.
 iptables -I OUTPUT -p tcp --dport 80 -j DROP
 iptables -I OUTPUT -p tcp --dport 443 -j DROP
 ```
@@ -57,7 +59,9 @@ Isso bloqueou toda saída HTTP/HTTPS. O servidor continuou funcionando intername
 O instinto natural é rodar `ps aux` e procurar algum processo estranho consumindo CPU. No meu caso:
 
 ```bash
+# Top 20 processos por uso de CPU — minerador escondido costuma se entregar aqui.
 ps aux --sort=-%cpu | head -20
+# Conexões de rede ativas e o processo dono de cada uma (-p).
 ss -tupn
 ```
 
@@ -74,12 +78,15 @@ Isso descartou a hipótese de comprometimento do sistema operacional. O atacante
 Com 12 instalações de WordPress no servidor, precisava encontrar qual foi comprometida.
 
 ```bash
+# Acha cada instalação de WordPress pelo wp-config.php, que fica na raiz de cada uma.
 find /home -name "wp-config.php" 2>/dev/null
 ```
 
 Retornou 11 instalações ativas. Agora, a busca por web shells clássicos:
 
 ```bash
+# Varre os .php atrás de assinaturas clássicas de web shell.
+# -r recursivo, -l mostra só o arquivo que casa; o \| separa as alternativas.
 grep -rl "eval(base64_decode\|system(\$_REQUEST\|exec(\$_POST\|passthru(\$_" \
   /home/ --include="*.php" 2>/dev/null
 ```
@@ -89,12 +96,14 @@ Resultado: vazio. O atacante era mais sofisticado do que isso.
 A próxima pista veio dos arquivos PHP modificados recentemente — comparando com a data do `wp-config.php` como referência:
 
 ```bash
+# Lista .php alterados nas últimas 48h (-mtime -2) — pega o que o atacante mexeu há pouco.
 find /home -name "*.php" -mtime -2 -ls 2>/dev/null | head -30
 ```
 
 E o grande achado — PHP files dentro da pasta `uploads`:
 
 ```bash
+# Procura .php dentro de uploads — pasta de mídia que JAMAIS deveria executar código.
 find /home -path "*/wp-content/uploads/*.php" 2>/dev/null
 ```
 
@@ -146,6 +155,8 @@ O site estava rodando WordPress 6.7.5 com dezenas de plugins desatualizados. O W
 Depois de remover os 57 shells da pasta uploads, pensei que havia terminado. Mas ao buscar por arquivos PHP modificados recentemente fora da pasta de uploads:
 
 ```bash
+# Caça o backdoor FORA de uploads: .php mais novos que o wp-config (-newer),
+# pulando a pasta uploads que já tínhamos limpado (-path ... -prune -o).
 find /home/site-comprometido/public_html/wp-content/ \
   -path "*/uploads/*" -prune -o \
   -name "*.php" -newer /home/site-comprometido/public_html/wp-config.php \
@@ -327,13 +338,16 @@ grep -rl "eval(\$_\|eval(base64\|system(\$_REQUEST" \
 
 ### Monitorar tráfego de saída
 
-Se o seu servidor não deveria fazer requisições HTTP para IPs externos, bloqueie por padrão:
+Se o seu servidor não deveria fazer requisições HTTP para IPs externos, comece registrando o que sai — assim você conhece o tráfego normal antes de cortar nada:
 
 ```bash
-# Logar conexões de saída suspeitas
+# Registra (não bloqueia) cada conexão de saída em HTTP/HTTPS no log do kernel.
+# É o alarme que denuncia um servidor sequestrado mandando POST pra fora.
 iptables -I OUTPUT -p tcp --dport 80 -j LOG --log-prefix "OUTBOUND-HTTP: "
 iptables -I OUTPUT -p tcp --dport 443 -j LOG --log-prefix "OUTBOUND-HTTPS: "
 ```
+
+Depois de confirmar o que é tráfego legítimo, troque `-j LOG` por `-j DROP` nessas mesmas regras para bloquear a saída de fato.
 
 ---
 
@@ -341,15 +355,19 @@ iptables -I OUTPUT -p tcp --dport 443 -j LOG --log-prefix "OUTBOUND-HTTPS: "
 
 | Horário | Evento |
 |---|---|
-| ~02:00 de 07/05 | Atacante explora WP File Manager, faz upload dos 57 shells |
+| ~02:00 de 08/05 | Atacante explora o WP File Manager e faz upload dos 57 shells |
 | 02:01 de 08/05 | Atacante varre o site confirmando os shells instalados |
-| 02:01 de 08/05 | Servidor começa ataques de força bruta em WordPress de terceiros |
-| 14:42 de 07/05 | Primeira notificação da Hetzner |
-| 18:33, 22:34, 02:33 | Mais notificações — ataques continuam |
-| ~17:00 de 08/05 | Início da investigação |
-| 17:35 | Shells identificados em `wp-content/uploads/` |
-| 17:41 | Plugin `achuchytha` identificado e analisado |
-| 00:01 de 09/05 | Limpeza completa — unlock request enviado à Hetzner |
+| 02:01 de 08/05 | Servidor começa os ataques de força bruta contra WordPress de terceiros |
+| 14:42 de 08/05 | Primeira notificação de abuso da Hetzner |
+| 18:33 de 08/05 | Segunda notificação — ataques continuam |
+| 22:34 de 08/05 | Terceira notificação |
+| ~01:50 de 09/05 | Quarta notificação e email de bloqueio; IP suspenso, servidor fora do ar (eu dormindo) |
+| ~08:00 de 09/05 | Acordo e vejo o email da Hetzner |
+| 08:15 de 09/05 | Contenção: bloqueio de toda a saída HTTP/HTTPS |
+| 08:30 de 09/05 | Início da investigação |
+| 09:05 de 09/05 | Shells identificados em `wp-content/uploads/` |
+| 09:11 de 09/05 | Plugin `achuchytha` identificado e analisado |
+| ~14:00 de 09/05 | Limpeza completa — unlock request enviado à Hetzner |
 
 ---
 

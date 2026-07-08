@@ -135,8 +135,6 @@ Com o Rock Lee como juiz, refiz tudo. O deslocamento era um wrap horizontal: eu 
 
 E ainda tinha um segundo andar. Com a largura certa, mandei um smiley redondo. Veio só a boca, a metade de baixo — o topo cortado. Mesma armadilha, outro eixo: a grade tinha escondido também que **a tela não mostra todas as linhas que recebe.** O framebuffer tem 180 linhas, mas só as 126 de cima aparecem no painel; o resto é buffer fora da tela (exatamente como o K86, que tinha colunas escondidas). O Rock Lee, que preenchia tudo, mascarou o corte. O smiley redondo entregou.
 
-![Smiley enrolado e deformado na telinha, com as metades deslocadas](./img/engenharia-reversa-teclado-attack-shark-x85-pro-linux/smiley-deformado.jpg "O mesmo smiley que a grade jurava estar certo — enrolado e cortado. Foi ele que denunciou que a tela não mostrava todas as linhas que recebia.")
-
 A geometria real da telinha do X85 Pro, depois de tudo:
 
 | | X85 Pro | K86 |

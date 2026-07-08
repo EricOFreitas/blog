@@ -4,7 +4,6 @@ description: "O Attack Shark X85 Pro tem uma telinha que só funciona com o soft
 date: 2026-06-26
 category: "Programação"
 tags: ["linux", "engenharia reversa"]
-draft: true
 ---
 
 Meu teclado novo chegou hoje. Um Attack Shark X85 Pro — 75%, hot-swap, knob de alumínio e uma telinha TFT minúscula no canto. Tirei da caixa, pluguei, gostei. Switch bom, layout compacto, exatamente o que eu queria.

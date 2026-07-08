@@ -117,7 +117,9 @@ A lógica é a seguinte. Se você manda uma imagem column-major com a altura err
 
 Comecei com um palpite. O buffer tinha 32.400 pixels. A raiz quadrada de 32.400 é exatamente 180 — se a tela fosse quadrada, 180x180. Mandei um padrão metade branco em cima, metade preto embaixo. Veio uma escada. Variei a altura de 1 em 1 pixel num "quente ou frio": 181 piorou, 179 deixou a divisa quase reta.
 
-Pra confirmar, troquei pra uma grade — linha vertical que continua reta diz que as colunas batem, horizontal que inclina denuncia a altura. Com 179 as horizontais ficaram retas, e ajustando a largura a grade fechou quadradinha. Mandei uma seta vermelha de teste: apareceu em pé, centralizada. Pronto, pensei. **180x179.** Anotei na tabela, atualizei o código, publiquei no GitHub.
+![Grade que deveria ser reta aparecendo em degraus de escada na telinha do teclado](./img/engenharia-reversa-teclado-attack-shark-x85-pro-linux/calibracao-grade-escada.jpg "Com a altura de linha ainda errada, a grade não fecha: cada coluna escorrega um pouco e o conjunto vira uma escada. Quanto mais degraus, mais longe eu estava da altura certa — a distorção virou a régua.")
+
+Pra confirmar, troquei pra uma grade — se as linhas verticais continuam retas, as colunas estão certas; se as horizontais inclinam, é a altura que está errada. Com 179 as horizontais ficaram retas, e ajustando a largura a grade fechou quadradinha. Mandei uma seta vermelha de teste: apareceu em pé, centralizada. Pronto, pensei. **180x179.** Anotei na tabela, atualizei o código, publiquei no GitHub.
 
 Estava errado. E o jeito como descobri é a melhor parte da história.
 
@@ -125,11 +127,15 @@ Estava errado. E o jeito como descobri é a melhor parte da história.
 
 Por diversão, mandei uma imagem de verdade pra tela — um Rock Lee chibi, de Naruto. E lá estava: uma emenda no meio da imagem, a metade esquerda deslocada da direita. Uma falha gritante que a grade tinha jurado não existir.
 
+![Rock Lee chibi partido por uma emenda no meio, as metades deslocadas na telinha do teclado](./img/engenharia-reversa-teclado-attack-shark-x85-pro-linux/rocklee-quebrado.jpg "O Rock Lee chibi que deveria estar inteiro — rachado por uma emenda no meio, a metade esquerda deslocada da direita. Foi essa imagem assimétrica que denunciou o erro que a grade, com sua repetição, escondia.")
+
 O motivo é sutil, e me pegou feio: **padrão periódico esconde deslocamento periódico.** Uma grade com linha a cada 30 pixels parece perfeita mesmo se a imagem inteira escorregar 30 pixels — o erro "encaixa" na repetição. Eu tinha calibrado com a régua errada. Só uma imagem **assimétrica**, um rosto onde cada pixel importa, podia revelar a verdade.
 
 Com o Rock Lee como juiz, refiz tudo. O deslocamento era um wrap horizontal: eu mandava colunas demais, as que sobravam davam a volta e sobrescreviam a esquerda. Fui reduzindo a largura até a emenda sumir — parou em **138 colunas**, não 180.
 
 E ainda tinha um segundo andar. Com a largura certa, mandei um smiley redondo. Veio só a boca, a metade de baixo — o topo cortado. Mesma armadilha, outro eixo: a grade tinha escondido também que **a tela não mostra todas as linhas que recebe.** O framebuffer tem 180 linhas, mas só as 126 de cima aparecem no painel; o resto é buffer fora da tela (exatamente como o K86, que tinha colunas escondidas). O Rock Lee, que preenchia tudo, mascarou o corte. O smiley redondo entregou.
+
+![Smiley enrolado e deformado na telinha, com as metades deslocadas](./img/engenharia-reversa-teclado-attack-shark-x85-pro-linux/smiley-deformado.jpg "O mesmo smiley que a grade jurava estar certo — enrolado e cortado. Foi ele que denunciou que a tela não mostrava todas as linhas que recebia.")
 
 A geometria real da telinha do X85 Pro, depois de tudo:
 
@@ -141,6 +147,8 @@ A geometria real da telinha do X85 Pro, depois de tudo:
 | Ordem | column-major | column-major |
 
 Nada disso está documentado em lugar nenhum. Descobri no olho, foto por foto — incluindo o cume falso no meio do caminho. Com a geometria certa, o smiley veio redondo e inteiro, e o Rock Lee, completo. Imagem na telinha, no Linux.
+
+![Rock Lee chibi inteiro e reconhecível na telinha do teclado](./img/engenharia-reversa-teclado-attack-shark-x85-pro-linux/rocklee-ok.jpg "Geometria real acertada (138×126): o Rock Lee volta inteiro e reconhecível, cada pixel no lugar. Vinte fotos depois, a telinha finalmente obedece — no Linux, sem Windows nenhum.")
 
 Tentei animação também — GIF de vários frames. Funciona, mas o firmware limpa a tela pra branco entre cada quadro, então pisca. Imagem estática fica impecável; animação fica nervosa. Fica pro próximo capítulo descobrir se o app oficial tem um truque pra isso.
 

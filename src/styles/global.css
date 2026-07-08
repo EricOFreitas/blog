@@ -308,6 +308,7 @@ main {
 
 .prose {
   font-size: 1.075rem;
+  counter-reset: figura;
 }
 
 .prose > * + * {
@@ -427,6 +428,36 @@ main {
   height: auto;
   border-radius: 8px;
   border: 1px solid var(--border);
+}
+
+/* ---------- figuras com legenda numerada ---------- */
+
+.prose figure.post-figure {
+  margin: 2rem 0;
+  counter-increment: figura;
+}
+
+.prose figure.post-figure img {
+  display: block;
+  margin: 0 auto;
+  max-width: min(100%, 26rem);
+  max-height: 80vh;
+  width: auto;
+}
+
+.prose figcaption {
+  margin: 0.7rem auto 0;
+  max-width: 40rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.prose figcaption::before {
+  content: "Figura " counter(figura) " — ";
+  color: var(--accent);
+  font-weight: 600;
 }
 
 /* ---------- voltar ---------- */

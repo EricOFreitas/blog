@@ -131,22 +131,23 @@ Por diversão, mandei uma imagem de verdade pra tela — um Rock Lee chibi, de N
 
 O motivo é sutil, e me pegou feio: **padrão periódico esconde deslocamento periódico.** Uma grade com linha a cada 30 pixels parece perfeita mesmo se a imagem inteira escorregar 30 pixels — o erro "encaixa" na repetição. Eu tinha calibrado com a régua errada. Só uma imagem **assimétrica**, um rosto onde cada pixel importa, podia revelar a verdade.
 
-Com o Rock Lee como juiz, refiz tudo. O deslocamento era um wrap horizontal: eu mandava colunas demais, as que sobravam davam a volta e sobrescreviam a esquerda. Fui reduzindo a largura até a emenda sumir — parou em **138 colunas**, não 180.
+Com o Rock Lee como juiz, refiz tudo. O deslocamento era um **wrap horizontal**: eu mandava colunas demais, e as que sobravam davam a volta e sobrescreviam a esquerda — daí a costura vertical no meio da imagem, com as duas metades escorregando uma sobre a outra, uma quase passando por trás da outra.
 
-E ainda tinha um segundo andar. Com a largura certa, mandei um smiley redondo. Veio só a boca, a metade de baixo — o topo cortado. Mesma armadilha, outro eixo: a grade tinha escondido também que **a tela não mostra todas as linhas que recebe.** O framebuffer tem 180 linhas, mas só as 126 de cima aparecem no painel; o resto é buffer fora da tela (exatamente como o K86, que tinha colunas escondidas). O Rock Lee, que preenchia tudo, mascarou o corte. O smiley redondo entregou.
+![Smiley na telinha partido por uma costura vertical, com as duas metades desencontradas](./img/engenharia-reversa-teclado-attack-shark-x85-pro-linux/emoji-costura.jpg "O mesmo defeito num desenho simples: o smiley rachado por uma costura vertical no meio, a metade esquerda escorregada em relação à direita. Sem a repetição que enganava a grade, o desencontro fica impossível de ignorar.")
+
+Num círculo simples como esse — sem a repetição que mascarava o erro na grade — o rasgo é escandaloso. Fui reduzindo a largura até a costura sumir: parou em **138 colunas**, não 180.
 
 A geometria real da telinha do X85 Pro, depois de tudo:
 
 | | X85 Pro | K86 |
 |---|---|---|
-| Framebuffer (colunas × linhas) | 138 × 180 | 240 × 135 |
-| Área visível | 138 × 126 | 135 × 135 |
+| Resolução visível | 138 × 180 | 135 × 135 |
 | Pixel | RGB565 big-endian | RGB565 big-endian |
 | Ordem | column-major | column-major |
 
 Nada disso está documentado em lugar nenhum. Descobri no olho, foto por foto — incluindo o cume falso no meio do caminho. Com a geometria certa, o smiley veio redondo e inteiro, e o Rock Lee, completo. Imagem na telinha, no Linux.
 
-![Rock Lee chibi inteiro e reconhecível na telinha do teclado](./img/engenharia-reversa-teclado-attack-shark-x85-pro-linux/rocklee-ok.jpg "Geometria real acertada (138×126): o Rock Lee volta inteiro e reconhecível, cada pixel no lugar. Vinte fotos depois, a telinha finalmente obedece — no Linux, sem Windows nenhum.")
+![Rock Lee chibi inteiro e reconhecível na telinha do teclado](./img/engenharia-reversa-teclado-attack-shark-x85-pro-linux/rocklee-ok.jpg "Largura certa, 138 colunas: o Rock Lee volta inteiro e reconhecível, cada pixel no lugar. Vinte fotos depois, a telinha finalmente obedece — no Linux, sem Windows nenhum.")
 
 Tentei animação também — GIF de vários frames. Funciona, mas o firmware limpa a tela pra branco entre cada quadro, então pisca. Imagem estática fica impecável; animação fica nervosa. Fica pro próximo capítulo descobrir se o app oficial tem um truque pra isso.
 
@@ -182,7 +183,7 @@ Licença MIT, crédito explícito ao AttackManatee, que foi a base de tudo.
 
 Essa foi a minha primeira contribuição open source. E o aprendizado mais forte não foi técnico — foi sobre a natureza da coisa.
 
-Engenharia reversa parece magia quando você vê de fora. Por dentro, é o oposto de magia: é paciência metódica. Achar o canal certo. Ler um descriptor. Testar uma hipótese. Olhar o resultado. Ajustar um byte. Olhar de novo. A geometria 138x126 não saiu de uma sacada genial — saiu de umas vinte fotos seguidas comparando escadas, emendas e cortes até cada pixel cair no lugar.
+Engenharia reversa parece magia quando você vê de fora. Por dentro, é o oposto de magia: é paciência metódica. Achar o canal certo. Ler um descriptor. Testar uma hipótese. Olhar o resultado. Ajustar um byte. Olhar de novo. A geometria 138×180 não saiu de uma sacada genial — saiu de umas vinte fotos seguidas comparando escadas, costuras e metades desencontradas até cada pixel cair no lugar.
 
 Quatro coisas que levo daqui:
 

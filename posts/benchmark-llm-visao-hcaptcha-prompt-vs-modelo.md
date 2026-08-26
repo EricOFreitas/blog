@@ -10,6 +10,8 @@ Apareceu um projeto na minha frente cujo maior obstáculo técnico era, de todos
 
 hCaptcha é aquele "selecione todas as fotos com um ônibus", num grid 3x3. Parece bobo, mas é feito de propósito pra atrapalhar máquina: a ideia inteira dele é ser fácil pro humano e difícil pro bot. As imagens são geradas e distorcidas de propósito pra derrubar classificador, as categorias e os tipos de desafio ficam girando, e o token que você recebe ao resolver tem prazo curto de validade — você tem segundos, não minutos. É um problema de visão computacional de verdade, com relógio correndo. Resolver bem, hoje, basicamente exige um modelo de visão que *raciocine* sobre a imagem, não que decore.
 
+![Desafio real do hCaptcha: grid 3x3 com elefantes, trens e hambúrgueres distorcidos, e um avião como referência](./img/benchmark-llm-visao-hcaptcha-prompt-vs-modelo/desafio-grid-referencia.png "Um desafio real do bench: ache as imagens da mesma categoria que a referência (o avião → transporte), com a arte cheia de distorção de propósito pra derrubar classificador. Guarde esse tipo \"imagem de referência\" — ele volta pra me derrubar mais adiante.")
+
 A abordagem mais direta é jogar um LLM de visão forte no problema — tipo o Gemini 2.5 Flash — pra olhar o grid e devolver as células certas. Funciona. Mas uns dias atrás fiz um teste rápido com um modelo chinês obscuro, o Xiaomi MiMo, só por curiosidade — e ele *identificou* o desafio direitinho. Aquilo plantou uma pergunta chata na cabeça: será que existe um LLM de visão mais barato que o Gemini que resolva isso tão bem e tão rápido? E, quem sabe, um que eu consiga rodar na minha própria máquina, sem depender de nuvem?
 
 Virou um estudo. E a pergunta prática logo deu lugar a outra, bem mais interessante, que é o que este post conta: **quanto do desempenho é o modelo, e quanto é o meu prompt estar calibrado pro Gemini sem eu perceber?**
@@ -43,6 +45,8 @@ Ou seja: eu não estava medindo "quão bem o modelo enxerga o grid". Estava medi
 Tinha um segundo problema. A "resposta certa" de cada caso que eu usava de referência era a resposta que o próprio Gemini tinha dado quando capturei os desafios. Só que o Gemini não é determinístico nesses desafios difíceis — rodando de novo, ele concorda com ele mesmo só umas 75 a 90% das vezes. Eu estava, em parte, medindo "o modelo X concorda com o Gemini", não "o modelo X acertou".
 
 Então sentei e rotulei os casos na mão. E no meio disso achei duas capturas quebradas — uma mostrava o texto de outro tipo de captcha, a outra tinha o enunciado em branco. Eram, não por acaso, exatamente os dois casos que *todo* modelo errava. Não eram difíceis. Eram lixo. Joguei fora e fiquei com dez casos sólidos, medidos contra um gabarito humano.
+
+![Captura de hCaptcha quebrada, com a barra do enunciado completamente em branco](./img/benchmark-llm-visao-hcaptcha-prompt-vs-modelo/captura-quebrada-enunciado-branco.png "Uma das duas capturas que *todo* modelo \"errava\": o enunciado em branco. Nenhum modelo tem como acertar a pergunta que não existe.")
 
 Também mudei a nota. Benchmark de LLM costuma somar dimensões numa média ponderada. Aqui isso não serve: precisão é pré-requisito (um solver 8% preciso é inútil por mais barato que seja) e latência é um portão físico (o token do hCaptcha tem prazo de validade — passar de um minuto reprova o solver de qualquer jeito). Então a nota virou multiplicativa: a precisão é o teto, velocidade e custo só modulam dentro dele. Um modelo impreciso ou lento não escapa da lanterna.
 

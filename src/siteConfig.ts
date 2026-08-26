@@ -9,9 +9,10 @@
 //      discussão, e copie os dois IDs que ele gera (repoId e categoryId).
 //   4. Cole abaixo e troque enabled para true.
 export const giscus = {
-  enabled: false,
+  enabled: true,
   repo: 'EricOFreitas/blog' as `${string}/${string}`,
-  repoId: '', // data-repo-id do giscus.app
-  category: 'Comentários',
-  categoryId: '', // data-category-id do giscus.app
+  repoId: 'R_kgDOTIkZeg',
+  // "Announcements": só o giscus/mantenedor cria discussion — visitante só comenta.
+  category: 'Announcements',
+  categoryId: 'DIC_kwDOTIkZes4DENTO',
 };

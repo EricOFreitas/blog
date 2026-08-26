@@ -144,7 +144,7 @@ O fluxo é um pipeline de 5 fases:
 2. **Implementation** — cria branch, abre sessão tmux, lança Claude Code, envia instruções
 3. **Testing** — roda pytest e ruff, verifica regressões
 4. **Review** — compila diff, revisa padrões (type hints, docstrings, secrets), notifica via Telegram
-5. **Merge** — cria PR via gh CLI, squash-merge, deleta branch, atualiza文档
+5. **Merge** — cria PR via gh CLI, squash-merge, deleta branch, atualiza a documentação
 
 O coordenador pede "preciso de um script pra extrair dados do Censo INEP". O dev planeja, implementa, testa, revisa e entrega. Tudo que eu faço é aprovar o plano inicial e autorizar o merge.
 

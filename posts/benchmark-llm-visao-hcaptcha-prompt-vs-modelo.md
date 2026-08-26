@@ -128,3 +128,7 @@ Três coisas que levo daqui:
 3. **O custo mora onde você não olha.** Os tokens de raciocínio não aparecem na resposta, mas aparecem na fatura. Meça o que é cobrado, não o que é impresso.
 
 Ficou faltando o que eu declaro como limitação honesta: são poucos casos, de um tipo só de desafio, e eu medi o passo de visão isolado — não subi o navegador pra ver o servidor aceitar o token de verdade. Isso é a próxima aventura. Mas a pergunta que abriu tudo já tem resposta: sim, dá pra trocar o Gemini — e, dependendo do que você valoriza, dá até pra tirar a nuvem da jogada e rodar na placa de vídeo que estava ali, jogando, faz cinco minutos.
+
+---
+
+*Se esse artigo te ajudou, compartilha. Se você também anda medindo LLM — principalmente se descobriu que estava medindo a coisa errada — me manda mensagem que eu quero ouvir essa história.*

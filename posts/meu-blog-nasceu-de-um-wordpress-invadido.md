@@ -82,3 +82,7 @@ Dois princípios que levo daqui:
 2. **Escolha pensando no que você vai ter que defender.** Todo sistema que você sobe é superfície de ataque e superfície de manutenção. A pergunta não é só "isso resolve?", é "eu quero ser responsável por isso pelos próximos anos?".
 
 O blog que você está lendo agora é a resposta que eu dei. HTML estático, servido de um CDN, escrito em arquivos `.md` que moram num repositório git. Sem painel. Sem banco. Sem `/wp-login.php` pra alguém bater às duas da manhã.
+
+---
+
+*Se esse artigo te ajudou, compartilha. Se você também já escolheu ferramenta no automático — e se arrependeu ou não — me manda mensagem que eu quero saber como foi.*

@@ -10,6 +10,8 @@ O email chegou quase 2 da manhã — mas eu só fui ver quando acordei. Remetent
 
 Primeira reação? Aquela sensação no estômago de quem sabe que alguma coisa está muito errada.
 
+![Email da Hetzner recebido às 2:33 da manhã com três anexos](./img/servidor-comprometido-wordpress-webshell/email-233-anexos.png "Lá estava ele na caixa de entrada: 2:33 da manhã, três anexos — o aviso, o relatório X-ARF e o log bruto do ataque.")
+
 O email dizia que meu servidor VPS na Alemanha estava sendo usado para atacar sites WordPress de terceiros via força bruta em `/wp-login.php`. Não um ataque. Quatro relatórios em menos de 12 horas, todos automatizados, todos com o mesmo padrão:
 
 ```
@@ -17,9 +19,11 @@ POST /wp-login.php HTTP/1.0 200 16509
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 ```
 
+![Trecho do relatório X-ARF apontando o IP atacando um WordPress de terceiros](./img/servidor-comprometido-wordpress-webshell/relatorio-xarf-bloqueio.png "O relatório anexo (IP e alvos tampados): meu servidor flagrado atacando o WordPress de um estranho — \"the original log report that triggered this block\".")
+
 A Hetzner bloqueou o IP. Meu servidor estava fora do ar.
 
-![Email da Hetzner repassando o relatório de abuso sobre o IP do servidor](./img/servidor-comprometido-wordpress-webshell/email-abuse-hetzner.png "O relatório de abuso repassado pela Hetzner (IP e alvos tampados): \"você não precisa responder, mas esperamos que você verifique e resolva\". O tom educado durou pouco — os relatórios seguintes vieram com bloqueio.")
+![Email da Hetzner repassando o relatório de abuso sobre o IP do servidor](./img/servidor-comprometido-wordpress-webshell/email-abuse-hetzner.png "O primeiro aviso, na tarde anterior, ainda educado: \"você não precisa responder, mas esperamos que você verifique e resolva\" (IP e alvos tampados). Doze horas depois, o tom já era bloqueio.")
 
 ---
 

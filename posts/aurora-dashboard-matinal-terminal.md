@@ -55,6 +55,8 @@ O que me importou não foi a tela em si, foi a arquitetura por trás dela. Cada 
 
 Isso é de propósito. Eu não quero descobrir, lá na frente, que pra plugar a corretora tenho que reescrever o painel. A tela e os robôs ficam separados desde o primeiro commit.
 
+![O cockpit da Aurora no terminal: agenda, caixa e carteira em painéis lado a lado](/aurora-cockpit.svg "A Aurora de hoje, algumas iterações depois do primeiro esqueleto: agenda, caixa e carteira num grid só, tema escuro de terminal. Os valores são ilustrativos.")
+
 ---
 
 ## O que ainda é promessa

@@ -19,6 +19,8 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 
 A Hetzner bloqueou o IP. Meu servidor estava fora do ar.
 
+![Email da Hetzner repassando o relatório de abuso sobre o IP do servidor](./img/servidor-comprometido-wordpress-webshell/email-abuse-hetzner.png "O relatório de abuso repassado pela Hetzner (IP e alvos tampados): \"você não precisa responder, mas esperamos que você verifique e resolva\". O tom educado durou pouco — os relatórios seguintes vieram com bloqueio.")
+
 ---
 
 ## O Que Estava Rodando Nessa Máquina

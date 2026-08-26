@@ -209,6 +209,8 @@ Esse modo eu mantenho. O bot continua no ar, e na véspera de um aporte — ou q
 
 ![Conversa com o Hermes-Ops investigando um alerta de falha de exportação](./img/ecossistema-4-agentes-ia-hermes/ops-diagnostico-export.png "O ops fazendo o que deixa saudade: o alerta chegou, eu perguntei \"o que foi esse erro?\" e ele investigou — três falhas em cascata, achou a chave de host divergente e propôs o conserto. Alerta que responde pergunta.")
 
+![Painel Aurora com erros "hermes indisponível: no route to host" em três painéis](./img/ecossistema-4-agentes-ia-hermes/aurora-cega-hermes-fora.png "A madrugada em que a Aurora acordou cega: \"hermes indisponível — no route to host\" na carteira, no fluxo previsto e nas pendências. O dado morreu junto com o agente (saldo tampado).")
+
 A queda ainda teve um efeito colateral que me doeu mais que os agentes: **a Aurora quebrou junto.** A Aurora — [o dashboard matinal no terminal](/posts/aurora-dashboard-matinal-terminal) — lia os dados do Hermes pra mostrar saldos e carteira. Sem o Hermes por baixo, o painel ficou cego. E foi essa perda que me mostrou o que de fato tinha valor no ecossistema inteiro: não era nenhum dos bots. Era a tela única da manhã — saldos, investimentos, avisos, agenda, notificações do GitHub, tudo num lugar só. Essa parte eu quero de volta, e reconstruir essa conciliação sem o Hermes no meio é assunto pros próximos posts.
 
 ---

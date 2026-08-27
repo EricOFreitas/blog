@@ -75,6 +75,8 @@ Agora eu tinha o mecanismo. Faltava a causa.
 
 Tinha um segundo controle novo, do mesmo modelo, comprado junto com o primeiro. Peguei pra fazer o teste que parecia definitivo: se o problema é o controle, o outro funciona; se os dois falham, o problema é o notebook.
 
+![Dois controles de Xbox Series, um branco e um preto, lado a lado na mesa](./img/controle-xbox-piscando-caindo-bluetooth-linux-firmware/dois-controles.jpg "Os dois réus: modelos iguais, comprados juntos, da mesma remessa — e, como eu descobriria, com o mesmo firmware velho de fábrica. Não eram duas amostras; eram a mesma amostra duplicada.")
+
 Pareei o segundo. Mesmo defeito. Piscava, conectava, caía, exigia sync a cada vez.
 
 A conclusão saltava aos olhos: **dois controles diferentes, mesmo problema, logo a culpa é do host.** Comecei a montar o caso contra o adaptador Intel — chipset conhecido por brigar com controle Xbox, próximo passo seria um dongle USB externo.

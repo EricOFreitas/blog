@@ -1,6 +1,6 @@
 ---
 title: "Montei 4 Agentes de IA Pra Cuidar da Minha Vida — e Três Meses Depois Desliguei Quase Tudo"
-description: "Instalei o Hermes Agent numa VPS de 9 dólares, criei perfis com bots no Telegram pra orçamento, agenda, investimentos e código — e três meses depois quase tudo estava pausado. A história inteira: o que montei, por que cada agente morreu, e o único que deixou saudade."
+description: "Instalei o Hermes Agent numa VPS de 9 dólares, criei perfis com bots no Telegram pra orçamento, agenda, investimentos e código — e três meses depois quase tudo estava pausado. A história inteira: o que montei, por que cada agente morreu, e o único que deixou saudade. Com adendo: dois dias depois o de infra voltou, e dar um terminal a ele me ensinou que só-leitura não se escreve no prompt, se escreve em código."
 date: 2026-08-26
 category: "Programação"
 tags: ["ia", "agentes"]
@@ -229,6 +229,60 @@ Colocando os perfis lado a lado, o padrão é constrangedor de tão claro:
 Em maio, eu terminava este post dizendo: alugue uma VPS, instale o Hermes Agent, crie um perfil, conecte um bot. Mantenho o roteiro — com a emenda que três meses de uso real escreveram. Comece pelo agente que **responde** algo que você pergunta com frequência, não pelo que te manda relatório. E antes de cada função, pergunte se não existe uma ferramenta especializada que já faz aquilo com integração de verdade — porque é contra ela que o seu agente vai competir, e no meu placar a especializada ganhou quase todas.
 
 O ecossistema de maio me deixou uma lição melhor do que o próprio sistema: eu não precisava de quatro funcionários digitais. Precisava de boas ferramentas — e de um colega que atende quando eu chamo.
+
+---
+
+## Adendo (28/08) — o de infra voltou dois dias depois
+
+Terminei o post dizendo que o agente de infra "talvez volte, sozinho". Voltou na madrugada de quinta. E a primeira surpresa foi que ele nunca tinha morrido.
+
+Fui procurar a VM antiga, aquela que eu desliguei, e ela continua desligada. O que eu tinha esquecido é que o ecossistema inteiro já havia migrado pra um container no Coolify — e lá dentro o processo do perfil de infra estava no ar havia doze dias, com o bot funcionando. Mandei uma mensagem de teste e chegou na hora. Ele não estava morto: estava mudo. O que tinha sumido eram os agendamentos de monitoramento. Um agente que só fala quando perguntado fica exatamente assim quando ninguém pergunta.
+
+### O erro que mente pra você
+
+Os quatro scripts de saúde continuavam lá, intactos. Rodei os quatro, e os quatro falharam igual:
+
+```
+Host key verification failed.
+```
+
+Quase saí trocando chave de host. Antes disso comparei as impressões digitais por dois caminhos independentes, e batiam — a chave estava certíssima. O problema era outro: eu entrava no container como root, e o OpenSSH **ignora a variável `$HOME`**. Ele descobre o diretório do usuário pelo `getpwuid()`, ou seja `/root/.ssh`, enquanto a chave e o `known_hosts` moram no home do usuário do agente. Uma flag a mais no `docker exec` e os quatro rodaram limpos.
+
+Ou seja: em produção nunca esteve quebrado. Quebrava só no meu teste manual. É o pior tipo de erro — o que aparece justamente quando você vai verificar, e te manda consertar o que não está torto.
+
+### Ele prometia o que não sabia fazer
+
+Aí veio a parte constrangedora. O arquivo de personalidade — o texto que o modelo lê como "quem eu sou" — prometia comando remoto por SSH, resumo de servidor, health check de uns quarenta sites. Fui conferir a configuração real: a lista de ferramentas dele tinha exatamente uma, e não era terminal. Ele não conseguia executar absolutamente nada.
+
+Isso não é detalhe cosmético. O modelo lê aquele texto e acredita. Quando eu perguntava alguma coisa, ele respondia com jeito de quem foi olhar — e não tinha ido a lugar nenhum. Depois que liguei o terminal de verdade e mandei ele reiniciar um serviço, foi bloqueado e me devolveu: "se quiser, me confirma explicitamente e eu uso a via que autoriza escrita". Não existe via nenhuma. Ele inventou por causa do texto velho.
+
+### "Só leitura" não é um pedido, é código
+
+Eu queria o agente de volta como copiloto: pergunto do celular às onze da noite por que a fila subiu, ele vai olhar e me conta. Só que o container carrega a chave SSH que os monitores usam, com acesso normal aos servidores. Escrever "você só faz leitura" na personalidade dele seria um pedido educado a um modelo — e eu já vi no que dá: em junho a auto-remediação desse mesmo agente reiniciou workers saudáveis por causa de um bug de fuso horário, e piorou a fila que devia curar.
+
+Então a leitura-só virou um gancho que roda antes de cada comando e pode vetar. Três decisões que fizeram diferença:
+
+- **Nega por padrão.** Lista do que pode, não do que não pode. Lista de proibidos sempre tem um buraco a mais do que você pensou.
+- **Encadeamento fica de fora inteiro** — `;`, `&&`, `$(...)`, crase, redirecionamento. É por ali que um comando vira outro. Pipe passa, mas cada lado é revalidado.
+- **O comando remoto do `ssh` é validado recursivamente.** Sem isso a guarda seria decorativa: bastaria prefixar `ssh máquina` e sair fazendo o que quisesse.
+
+Escrevi 32 casos de teste antes de ligar. Depois, com tudo no ar, mandei o agente rodar `whoami && date` — dois comandos inofensivos. Bloqueado, pelo `&&`. Ele explicou o motivo e emendou por conta própria: "não existe modo de contornar". Agora é verdade.
+
+Duas armadilhas quase deixaram a parede aberta sem eu notar. A primeira: o gancho precisa de uma aprovação de primeiro uso e o processo roda sem terminal interativo — sem uma opção específica ligada na configuração, ele simplesmente **não é registrado**. Falha aberta, não fechada. A segunda: a aprovação é por hash do arquivo, e meu próprio script de deploy reenviava o gancho mesmo sem mudança nenhuma, derrubando a aprovação a cada rodada. Descobri porque o comando de diagnóstico do próprio Hermes reclamou. Consertei o deploy pra não reenviar arquivo idêntico.
+
+### O primeiro alerta foi um alarme falso do próprio monitor
+
+Religados os agendamentos, a primeira mensagem que chegou no Telegram foi "fila não drena — 37 pendentes, o mais antigo há 100 minutos". Fui ao banco: zero esperando. Todos os "pendentes" eram jobs que os trinta workers estavam processando naquele exato momento.
+
+A consulta contava a tabela inteira sem separar o que espera do que está em execução. Foi escrita quando existiam três workers; com trinta, é aritmeticamente impossível ela não disparar. Era o monitor descrevendo a si mesmo.
+
+E um vigia novo que escrevi no mesmo dia quase nasceu com um defeito da mesma família. Eu montava a saída com `echo "$arquivo\t$idade"`, e o shell daquele servidor não interpreta `\t`: o separador virava dois caracteres literais, o `awk` não casava nada e o vigia ficava **cego e silencioso** — o pior estado possível pra um alarme, porque parece saúde. Só apareceu porque fui conferir os números crus antes de confiar neles.
+
+### O que mudou de fato
+
+Ele voltou no formato que a queda tinha ensinado. Quem empurra mensagem agora são scripts burros, sem modelo nenhum no meio: medem, comparam com um limite e só falam na transição de estado. O modelo ficou com a parte de que eu sentia falta — responder quando eu pergunto.
+
+E a régua ganhou uma linha que eu não tinha em maio: **agente que só conversa se governa com texto; agente que age se governa com código.** Enquanto ele apenas escrevia, o pior risco era uma resposta ruim. No minuto em que ganhou um terminal, a personalidade virou documentação — e a regra de verdade teve que virar um programa que sabe dizer não.
 
 ---
 

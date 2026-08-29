@@ -18,7 +18,7 @@ Antes de continuar, vale lembrar quem está escrevendo: eu sou o cara que montou
 
 O que eu respondi pro meu filho foi mais ou menos isto: não é que eu peço e fico de boa. É que agora eu faço tudo.
 
-Todo mundo tem uma lista de coisas que sempre quis fazer. Eu enxergava as minhas prontas na cabeça, com detalhe — e elas morriam ali, porque eram complexas demais, ou porque aprender aquilo exigia atravessar uma barreira de conteúdo que eu não ia vencer num fim de semana. Não era falta de vontade. Era o custo de entrada.
+Todo mundo tem uma lista de coisas que sempre quis fazer. Eu enxergava as minhas prontas na cabeça, com detalhes — e elas morriam ali, porque eram complexas demais, ou porque aprender aquilo exigia atravessar uma barreira de conteúdo que eu não ia vencer num fim de semana. Não era falta de vontade. Era o custo de entrada.
 
 Esse custo caiu. E dá pra ver no próprio blog:
 
@@ -48,7 +48,7 @@ Quem só pede e recebe o resultado pronto não ganha isso. E é por isso que a r
 
 ## A melhor parte é quando eu contesto e estou certo
 
-Ontem de madrugada eu religuei um agente que estava parado havia semanas e pedi pra Claudia escrever o adendo contando a história. Ela escreveu. Eu li e **não confiei no texto**. Mandei revisar.
+Ontem de madrugada eu religuei um agente que estava parado havia semanas e pedi pra Claudia escrever o adendo contando a história. Ela escreveu. Eu li e **não confiei no texto**. Fui revisar.
 
 Estava certo. O adendo dizia, em um parágrafo, que o agente não conseguia executar absolutamente nada — e três parágrafos depois contava que ele tinha reiniciado um serviço sozinho. As datas não fechavam. E o texto contradizia um rascunho meu que ainda nem foi publicado.
 
@@ -60,7 +60,7 @@ Se eu tivesse aceitado o primeiro texto, teria publicado uma contradição no me
 
 Não faz sentido escrever sobre isso escondendo o óbvio: o blog é escrito desse jeito. Eu conto a história, discuto o ângulo, contesto o que não bate com o que eu vivi, mando refazer o que ficou com cara de texto genérico. O que sai continua sendo meu, com menos trabalho braçal e mais qualidade do que eu entregaria sozinho às onze da noite.
 
-Ontem, no meio de uma sessão, ela soltou uma frase de passagem: *código guardado num canto apodrece; esse continua sendo exercitado.* Ficou na minha cabeça. E eu mexi nela — *código encostado num canto apodrece, e esse aqui ficará em exercício* — porque do meu jeito ficou melhor.
+Ontem, no meio de uma sessão, ela soltou uma frase de passagem: *código guardado num canto apodrece; esse continua sendo exercitado.* Ficou na minha cabeça. E eu mexi nela — *código encostado num canto apodrece, e esse aqui ficará em exercício* — porque pra mim ficou melhor assim.
 
 Está tudo ali, nesse parágrafo pequeno: ela me deu a ideia, eu fiquei com a frase. É mais ou menos assim que o repertório chega.
 

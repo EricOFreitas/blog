@@ -234,9 +234,9 @@ O ecossistema de maio me deixou uma lição melhor do que o próprio sistema: eu
 
 ## Adendo (28/08) — o de infra voltou dois dias depois
 
-Terminei o post dizendo que o agente de infra "talvez volte, sozinho". Voltou na madrugada de quinta. E a primeira surpresa foi que ele nunca tinha morrido.
+Terminei o post dizendo que o agente de infra "talvez volte, sozinho". Voltou na madrugada desta sexta. E a primeira surpresa foi que ele nunca tinha morrido.
 
-Fui procurar a VM antiga, aquela que eu desliguei, e ela continua desligada. O que eu tinha esquecido é que o ecossistema inteiro já havia migrado pra um container no Coolify — e lá dentro o processo do perfil de infra estava no ar havia doze dias, com o bot funcionando. Mandei uma mensagem de teste e chegou na hora. Ele não estava morto: estava mudo. O que tinha sumido eram os agendamentos. Um agente que só fala quando perguntado fica exatamente assim quando ninguém pergunta.
+Fui procurar a VM antiga, aquela que eu desliguei, e ela continua desligada. O que eu tinha esquecido é que o perfil de infra foi junto na mudança pro Coolify — a migração que eu tinha dado por perdida numa madrugada de julho acabou indo, e eu nunca reconfigurei nada depois dela. Por isso ele passou por morto na minha cabeça. Fui olhar o container: o processo estava no ar havia doze dias, com o bot funcionando. Mandei uma mensagem de teste e chegou na hora. Ele não estava morto, estava mudo — o que tinha sumido na mudança de casa eram os agendamentos, e agendamento ninguém remonta sozinho. Dos cinco perfis, o único que nunca parou foi o trader. É também o único que eu continuo perguntando.
 
 ### O erro que mente pra você
 
@@ -246,19 +246,31 @@ Os scripts que ele usava continuavam lá, intactos. Rodei todos, e todos falhara
 Host key verification failed.
 ```
 
-Quase saí trocando chave de host. Antes disso comparei as impressões digitais por dois caminhos independentes, e batiam — a chave estava certíssima. O problema era outro: eu entrava no container como root, e o OpenSSH **ignora a variável `$HOME`**. Ele descobre o diretório do usuário pelo `getpwuid()`, ou seja `/root/.ssh`, enquanto a chave e o `known_hosts` moram no home do usuário do agente. Uma flag a mais no `docker exec` e tudo rodou limpo.
+Quase saí trocando chave de host — seria a segunda vez, já tinha caído nessa investigando um alerta meses atrás. Antes disso comparei as impressões digitais por dois caminhos independentes, e batiam: a chave estava certíssima. O problema era outro. Eu entrava no container como root, e o OpenSSH **ignora a variável `$HOME`** — ele descobre o diretório do usuário pelo `getpwuid()`, ou seja `/root/.ssh`, enquanto a chave e o `known_hosts` moram no home do usuário do agente. Era uma flag no `docker exec`:
 
-Ou seja: nunca esteve quebrado de verdade. Quebrava só no meu teste manual. É o pior tipo de erro — o que aparece justamente quando você vai verificar, e te manda consertar o que não está torto.
+```bash
+# como eu estava rodando: entro como root, e o ssh vai procurar em /root/.ssh
+docker exec hermes-agent ssh minha-vps "uptime"
+# Host key verification failed.
+
+# com -u eu entro como o usuário do agente (UID 10000, sem privilégio);
+# aí o getpwuid() acha o .ssh certo e o known_hosts que já tinha a chave
+docker exec -u 10000 hermes-agent ssh minha-vps "uptime"
+```
+
+É a segunda vez que `/root` me morde nesse container: na migração pro Coolify, o que derrubava os bots era o `HOME` apontando pra lá e o usuário sem permissão de escrever o arquivo de trava. Mesma família de bug, e mesmo assim eu não reconheci de cara.
+
+Ou seja: nunca esteve quebrado. Quebrava só no meu teste manual — o erro nasceu do jeito que eu fui verificar, e quase me fez trocar uma chave que estava certa.
 
 ### Ele prometia o que não sabia fazer
 
-Aí veio a parte constrangedora. O arquivo de personalidade — o texto que o modelo lê como "quem eu sou" — prometia comando remoto por SSH, resumo de servidor, health check dos meus sites. Fui conferir a configuração real: a lista de ferramentas dele tinha exatamente uma, e não era terminal. Ele não conseguia executar absolutamente nada.
+Aí veio a parte constrangedora. O arquivo de personalidade — o texto que o modelo lê como "quem eu sou" — prometia comando remoto por SSH, resumo de servidor, health check dos sites que eu hospedo. Fui conferir a configuração real: a lista de ferramentas dele tinha exatamente uma, e não era terminal. Ele não conseguia executar absolutamente nada.
 
-Isso não é detalhe cosmético. O modelo lê aquele texto e acredita. Quando eu perguntava alguma coisa, ele respondia com jeito de quem foi olhar — e não tinha ido a lugar nenhum. Depois que liguei o terminal de verdade e mandei ele reiniciar um serviço, foi bloqueado e me devolveu: "se quiser, me confirma explicitamente e eu uso a via que autoriza escrita". Não existe via nenhuma. Ele inventou por causa do texto velho.
+Isso não é detalhe cosmético. O modelo lê aquele texto e acredita. Quando eu perguntava alguma coisa, ele respondia com jeito de quem foi olhar — e não tinha ido a lugar nenhum. Depois que liguei o terminal de verdade e mandei ele reiniciar um serviço, foi bloqueado e me devolveu: "se quiser, me confirma explicitamente e eu uso a via que autoriza escrita". Não existe via nenhuma. Ele deduziu que existia porque o texto dizia que ele sabia fazer aquilo.
 
 ### "Só leitura" não é um pedido, é código
 
-Eu queria o agente de volta como copiloto: pergunto do celular às onze da noite o que está acontecendo num servidor, ele vai olhar e me conta. Só que o container carrega a chave SSH que dá acesso normal às máquinas. Escrever "você só faz leitura" na personalidade dele seria um pedido educado a um modelo — e eu já vi no que dá: esse mesmo agente, meses atrás, decidiu sozinho reiniciar um serviço que estava saudável, por causa de uma leitura errada de horário, e piorou o problema que devia resolver.
+Eu queria o agente de volta como copiloto: pergunto do celular às onze da noite por que uma VPS minha está lenta, ele vai olhar e me conta. Só que o container carrega a chave SSH que dá acesso normal às minhas máquinas. Escrever "você só faz leitura" na personalidade dele seria um pedido educado a um modelo — e eu já vi no que dá. Em junho, uma rotina de auto-remediação reiniciou sozinha um serviço que estava saudável, por causa de uma leitura errada de horário, e piorou o que devia resolver. Aquilo ali não tinha modelo nenhum no meio: era uma condição mal escrita num script. Um modelo com terminal tem mais jeitos de errar, não menos.
 
 Então a leitura-só virou um gancho que roda antes de cada comando e pode vetar. Três decisões que fizeram diferença:
 
@@ -266,9 +278,16 @@ Então a leitura-só virou um gancho que roda antes de cada comando e pode vetar
 - **Encadeamento fica de fora inteiro** — `;`, `&&`, `$(...)`, crase, redirecionamento. É por ali que um comando vira outro. Pipe passa, mas cada lado é revalidado.
 - **O comando remoto do `ssh` é validado recursivamente.** Sem isso a guarda seria decorativa: bastaria prefixar `ssh máquina` e sair fazendo o que quisesse.
 
-Escrevi 32 casos de teste antes de ligar. Depois, com tudo no ar, mandei o agente rodar `whoami && date` — dois comandos inofensivos. Bloqueado, pelo `&&`. Ele explicou o motivo e emendou por conta própria: "não existe modo de contornar". Agora é verdade.
+Escrevi 32 casos de teste antes de ligar. Depois, com tudo no ar, mandei o agente rodar dois comandos inofensivos:
 
-Duas armadilhas quase deixaram a parede aberta sem eu notar. A primeira: o gancho precisa de uma aprovação de primeiro uso, e o processo roda sem terminal interativo — sem uma opção específica ligada na configuração, ele simplesmente **não é registrado**. Falha aberta, não fechada. A segunda: a aprovação é por hash do arquivo, e meu próprio script de deploy reenviava o gancho mesmo sem mudança nenhuma, derrubando a aprovação a cada rodada. Só descobri porque o comando de diagnóstico do próprio Hermes reclamou.
+```bash
+# nenhum dos dois faz mal a ninguém — mas o && é encadeamento, e encadeamento não passa
+whoami && date
+```
+
+Bloqueado. Ele explicou o motivo e emendou por conta própria: "não existe modo de contornar". Agora é verdade.
+
+Duas armadilhas quase deixaram a guarda aberta sem eu notar. A primeira: o gancho precisa de uma aprovação de primeiro uso, e o processo roda sem terminal interativo — sem uma opção específica ligada na configuração, ele simplesmente **não é registrado**. Falha aberta, não fechada. A segunda: a aprovação é por hash do arquivo, e meu próprio script de deploy reenviava o gancho mesmo sem mudança nenhuma, derrubando a aprovação a cada rodada. Só descobri porque o comando de diagnóstico do próprio Hermes reclamou. Consertei o deploy pra não reenviar arquivo idêntico.
 
 ### O que mudou de fato
 

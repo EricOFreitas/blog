@@ -60,7 +60,9 @@ Se eu tivesse aceitado o primeiro texto, teria publicado uma contradição no me
 
 Não faz sentido escrever sobre isso escondendo o óbvio: o blog é escrito desse jeito. Eu conto a história, discuto o ângulo, contesto o que não bate com o que eu vivi, mando refazer o que ficou com cara de texto genérico. O que sai continua sendo meu, com menos trabalho braçal e mais qualidade do que eu entregaria sozinho às onze da noite.
 
-Ontem li uma frase que ficou na cabeça: código encostado num canto apodrece, e esse aqui ficaria em exercício. Quem escreveu a frase foi ela, no meio de uma sessão, de passagem. Eu guardei. É mais ou menos assim que o repertório chega.
+Ontem, no meio de uma sessão, ela soltou uma frase de passagem: *código guardado num canto apodrece; esse continua sendo exercitado.* Ficou na minha cabeça. E eu mexi nela — *código encostado num canto apodrece, e esse aqui ficará em exercício* — porque do meu jeito ficou melhor.
+
+Está tudo ali, nesse parágrafo pequeno: ela me deu a ideia, eu fiquei com a frase. É mais ou menos assim que o repertório chega.
 
 ## A pessoa que ri de mim é a que mais quer entrar
 
